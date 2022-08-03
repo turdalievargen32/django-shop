@@ -82,9 +82,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'py21shop',
+        'NAME': 'py21_shop',
         'PASSWORD': '1',
-        'USER': 'nastya',
+        'USER': 'hello',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -145,4 +145,14 @@ from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }
