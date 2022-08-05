@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from rest_framework import mixins
+from rest_framework import mixins, filters
 
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
@@ -17,10 +17,14 @@ from .permissions import IsAuthor
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+from shop import serializers
+
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.OrderingFilter]
+    orderings_fields = ['title', 'price']
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -39,6 +43,14 @@ class ProductViewSet(ModelViewSet):
         return Response(serializer.data, 200)
 
 
+    @action(methods=['GET'], detail=False)
+    def order_by_rating(self, request):
+        queryset = self.get_queryset()
+
+
+        queryset = sorted(queryset, key=lambda product: product.average_rating, reverse=True)
+        serializers = ProductSerializer(queryset, many = True, context={'request': request})
+        return Response(serializers.data, 200)
 
 class CategotyViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.ListModelMixin, GenericViewSet):
     queryset = Category.objects.all()

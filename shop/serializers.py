@@ -1,5 +1,3 @@
-from itertools import product
-from requests import request
 from rest_framework import serializers
 
 from .models import Product, Category, Comment, Like, Rating
@@ -13,7 +11,7 @@ class ProductSerializer(serializers.ModelSerializer):
         rep = super().to_representation(instance)
         rep['comments'] = CommentSerializer(instance.comments.all(), many = True).data
         rep['likes'] = instance.likes.all().count()
-        rep['rating'] = instance.get_average_rating()
+        rep['rating'] = instance.average_rating
         rep['liked_by_user'] = False
         rep['user_rating'] = 0
 
